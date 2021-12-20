@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const OrderList = () => {
   const [text, setText] = useState("");
@@ -6,7 +6,7 @@ const OrderList = () => {
   const [changedOrder, setChangedOrder] = useState(false);
 
   const addList = (e) => {
-    if (e.key === "Enter" && text !== "") {
+    if (e.key === "Enter") {
       setList([...list, text]);
       setText("");
     }
@@ -16,19 +16,37 @@ const OrderList = () => {
     setChangedOrder(!changedOrder);
   };
 
-  if (changedOrder) {
-    list.sort((a, b) => {
-      if (a > b) {
-        return -1;
-      }
-      if (b > a) {
-        return 1;
-      }
-      return 0;
-    });
-  } else {
-    list.sort();
-  }
+  useEffect(() => {
+    if (changedOrder) {
+      list.sort((a, b) => {
+        if (a > b) {
+          return -1;
+        }
+        if (b > a) {
+          return 1;
+        }
+        return 0;
+      });
+    } else {
+      list.sort();
+    }
+  }, [changedOrder, list]);
+
+  /* 
+    if (changedOrder) {
+      list.sort((a, b) => {
+        if (a > b) {
+          return -1;
+        }
+        if (b > a) {
+          return 1;
+        }
+        return 0;
+      });
+    } else {
+      list.sort();
+    }
+ */
 
   return (
     <div>
@@ -48,7 +66,9 @@ const OrderList = () => {
           delete
         </button>
         <ul className="item-list">
-          {list.length > 0 ? list.map((item) => <li>{item}</li>) : null}
+          {list.length > 0
+            ? list.map((item, index) => <li key={index}>{item}</li>)
+            : null}
         </ul>
       </>
     </div>
